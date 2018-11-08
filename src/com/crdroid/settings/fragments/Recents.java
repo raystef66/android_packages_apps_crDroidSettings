@@ -44,86 +44,46 @@ import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settings.search.Indexable;
 
 import com.crdroid.settings.R;
-import com.crdroid.settings.fragments.misc.AlarmBlocker;
-import com.crdroid.settings.fragments.misc.ScreenStateToggles;
-import com.crdroid.settings.fragments.misc.WakeLockBlocker;
 
 import java.util.List;
 import java.util.ArrayList;
 
-public class Miscellaneous extends SettingsPreferenceFragment 
-        implements Indexable, Preference.OnPreferenceChangeListener {
+public class Recents extends SettingsPreferenceFragment 
+        implements Preference.OnPreferenceChangeListener, Indexable {
 
-    public static final String TAG = "Miscellaneous";
+    public static final String TAG = "Recents";
 
-    private static final String KEY_ADAWAY = "adaway";
-    private static final String KEY_ADAWAY_PACKAGE_NAME = "org.adaway";
-    private static final String KEY_LOCK_CLOCK = "lock_clock";
-    private static final String KEY_LOCK_CLOCK_PACKAGE_NAME = "com.cyanogenmod.lockclock";
-    private static final String SHOW_CPU_INFO_KEY = "show_cpu_info";
+    private static final String PREF_RECENTS_STYLE = "recents_component";
 
-    private SwitchPreference mShowCpuInfo;
+    private ListPreference mRecentsStyle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Context mContext = getActivity().getApplicationContext();
+        addPreferencesFromResource(R.xml.crdroid_settings_recents);
 
-        addPreferencesFromResource(R.xml.crdroid_settings_misc);
-
-        ContentResolver resolver = mContext.getContentResolver();
-
-        if (!Utils.isPackageInstalled(mContext, KEY_ADAWAY_PACKAGE_NAME)) {
-            getPreferenceScreen().removePreference(findPreference(KEY_ADAWAY));
-        }
-
-        // mLockClock
-        if (!Utils.isPackageInstalled(mContext, KEY_LOCK_CLOCK_PACKAGE_NAME)) {
-            getPreferenceScreen().removePreference(findPreference(KEY_LOCK_CLOCK));
-        }
-
-        mShowCpuInfo = (SwitchPreference) findPreference(SHOW_CPU_INFO_KEY);
-        mShowCpuInfo.setChecked(Settings.Global.getInt(resolver,
-                Settings.Global.SHOW_CPU_OVERLAY, 0) == 1);
-        mShowCpuInfo.setOnPreferenceChangeListener(this);
-    }
-
-    public static void reset(Context mContext) {
-        ContentResolver resolver = mContext.getContentResolver();
-        Settings.Global.putInt(resolver,
-                Settings.Global.ALLOW_SIGNATURE_FAKE, 1);
-        Settings.Global.putInt(resolver,
-                Settings.Global.TOAST_ICON, 1);
-        Settings.System.putIntForUser(resolver,
-                Settings.System.MEDIA_SCANNER_ON_BOOT, 0, UserHandle.USER_CURRENT);
-        writeCpuInfoOptions(mContext, false);
-        AlarmBlocker.reset(mContext);
-        ScreenStateToggles.reset(mContext);
-        WakeLockBlocker.reset(mContext);
-    }
-
-    private static void writeCpuInfoOptions(Context mContext, boolean value) {
-        Settings.Global.putInt(mContext.getContentResolver(),
-                Settings.Global.SHOW_CPU_OVERLAY, value ? 1 : 0);
-        Intent service = (new Intent())
-                .setClassName("com.android.systemui", "com.android.systemui.CPUInfoService");
-        if (value) {
-            mContext.startService(service);
-        } else {
-            mContext.stopService(service);
-        }
+        mRecentsStyle = (ListPreference) findPreference(PREF_RECENTS_STYLE);
+        mRecentsStyle.setOnPreferenceChangeListener(this);
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         ContentResolver resolver = getActivity().getContentResolver();
-        Context mContext = getActivity().getApplicationContext();
-        if (preference == mShowCpuInfo) {
-            writeCpuInfoOptions(mContext, (Boolean) newValue);
+        if (preference == mRecentsStyle) {
+            int value = Integer.parseInt((String) newValue);
+            Settings.System.putIntForUser(resolver,
+                Settings.System.RECENTS_COMPONENT, value, UserHandle.USER_CURRENT);
+            Utils.showSystemUiRestartDialog(getActivity());
             return true;
         }
         return false;
+    }
+
+    public static void reset(Context mContext) {
+        ContentResolver resolver = mContext.getContentResolver();
+        Settings.System.putIntForUser(resolver,
+                Settings.System.RECENTS_COMPONENT, 0, UserHandle.USER_CURRENT);
     }
 
     @Override
@@ -142,7 +102,7 @@ public class Miscellaneous extends SettingsPreferenceFragment
                     ArrayList<SearchIndexableResource> result =
                             new ArrayList<SearchIndexableResource>();
                     SearchIndexableResource sir = new SearchIndexableResource(context);
-                    sir.xmlResId = R.xml.crdroid_settings_misc;
+                    sir.xmlResId = R.xml.crdroid_settings_recents;
                     result.add(sir);
 
                     return result;
