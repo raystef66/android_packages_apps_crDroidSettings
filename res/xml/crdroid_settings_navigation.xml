@@ -41,6 +41,14 @@
         android:fragment="com.android.settings.gestures.GestureSettings"
         settings:controller="com.android.settings.gestures.GesturesSettingPreferenceController"/>
 
+    <!-- Pulse -->
+    <Preference
+        android:key="pulse_settings"
+        android:icon="@drawable/ic_pulse"
+        android:title="@string/pulse_settings"
+        android:summary="@string/pulse_settings_summary"
+        android:fragment="com.crdroid.settings.fragments.navigation.PulseSettings" />
+
     <!--<PreferenceCategory
         android:key="navbar_gestures_category"
         android:title="@string/gestures_title">
@@ -131,13 +139,6 @@
             android:title="@string/navbar_dynamic_title"
             android:summary="@string/navbar_dynamic_summary"
             android:defaultValue="false"/>
-
-        <PreferenceScreen
-            android:key="pulse_settings"
-            android:icon="@drawable/ic_pulse"
-            android:title="@string/pulse_settings"
-            android:summary="@string/pulse_settings_summary"
-            android:fragment="com.crdroid.settings.fragments.navbar.Pulse" />
     </PreferenceCategory>-->
 
     <PreferenceScreen

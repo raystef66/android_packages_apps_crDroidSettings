@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2012-2014 The TeamEos Project
-               (C) 2016-2017 crDroid Android Project
+               (C) 2016-2018 crDroid Android Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -20,43 +20,50 @@
     xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
     android:title="@string/pulse_settings" >
 
-    <SwitchPreference
-        android:key="eos_fling_show_pulse"
+    <com.crdroid.settings.preferences.SystemSettingSwitchPreference
+        android:key="fling_pulse_enabled"
         android:title="@string/fling_show_pulse_title"
         android:summary="@string/fling_show_pulse_summary" />
+
+    <Preference
+        android:key="blacklist_fragment"
+        android:fragment="com.crdroid.settings.fragments.navigation.PulseBlacklist"
+        android:title="@string/pulse_blacklist_title"
+        android:summary="@string/pulse_blacklist_summary"
+        android:dependency="fling_pulse_enabled" />
 
     <ListPreference
         android:key="pulse_render_mode"
         android:title="@string/pulse_render_mode_title"
         android:entries="@array/pulse_render_mode_entries"
         android:entryValues="@array/pulse_render_mode_values"
-        android:dependency="eos_fling_show_pulse" />
+        android:dependency="fling_pulse_enabled" />
 
     <SwitchPreference
         android:key="pulse_auto_color"
         android:title="@string/pulse_auto_color_title"
         android:summary="@string/pulse_auto_color_summary"
-        android:dependency="eos_fling_show_pulse" />
+        android:dependency="fling_pulse_enabled" />
 
     <com.crdroid.settings.preferences.colorpicker.ColorPickerPreference
         android:key="eos_fling_pulse_color"
         android:title="@string/fling_pulse_color"
         android:summary="@string/fling_pulse_color_summary"
         android:defaultValue="0xffffff"
-        android:dependency="eos_fling_show_pulse" />
+        android:dependency="fling_pulse_enabled" />
 
     <SwitchPreference
         android:key="eos_fling_lavalamp"
         android:title="@string/eos_fling_lavalamp_title"
         android:summary="@string/eos_fling_lavalamp_summary"
-        android:dependency="eos_fling_show_pulse" />
+        android:dependency="fling_pulse_enabled" />
 
-    <com.crdroid.settings.preferences.CustomSeekBarPreference
+    <!--<com.crdroid.settings.preferences.CustomSeekBarPreference
         android:key="pulse_custom_buttons_opacity"
         android:title="@string/pulse_custom_buttons_opacity_title"
         android:max="255"
         settings:min="0"
-        android:dependency="eos_fling_show_pulse"/>
+        android:dependency="fling_pulse_enabled"/>-->
 
     <PreferenceCategory
         android:key="pulse_fading_bars_category"
@@ -115,13 +122,13 @@
             android:key="fling_lavalamp_color_from"
             android:title="@string/fling_lavalamp_color_from"
             android:defaultValue="0xffff8080"
-            android:dependency="eos_fling_show_pulse" />
+            android:dependency="fling_pulse_enabled" />
 
         <com.crdroid.settings.preferences.ColorPickerPreference
             android:key="fling_lavalamp_color_to"
             android:title="@string/fling_lavalamp_color_to"
             android:defaultValue="0xff8080ff"
-            android:dependency="eos_fling_show_pulse" />-->
+            android:dependency="fling_pulse_enabled" />-->
     </PreferenceCategory>
 
     <PreferenceCategory
